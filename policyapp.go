@@ -8,12 +8,15 @@ import (
 	"log"
 	"math/rand"
 	"os"
+	"policymanagement/gocharts/store"
 	"policymanagement/gorm/DBStore"
 	"policymanagement/gorm/orminterfaces"
 	"policymanagement/interfaces"
 	"policymanagement/models"
 	"policymanagement/utility"
 	"time"
+
+	"github.com/brianvoe/gofakeit/v7"
 )
 
 func main() {
@@ -26,19 +29,57 @@ func main() {
 	//writeCSVFile()
 	//Recursive()
 	//CreateConnection()
-	SaveMember()
+	//SaveMember()
+	PrintAllMembers()
+}
+func CreateChart() {
+	models := []string{"BMW", "AUDI", "HYUNDAI", "KIA", "FORD"}
+	claims := []store.Claim{}
+
+	//generate 50 claims with random amounts
+	for i := 0; i < 25; i++ {
+		claim := store.Claim{
+			ID:        uint(i + 1),
+			ModelName: models[gofakeit.Number(0, len(models)-1)], // Random model
+			Amount:    gofakeit.IntRange(100000000, 1000000000),  // Random amount
+		}
+		claims = append(claims, claim)
+	}
+
+	store.GenerateBarGraphClaims(claims, models)
 }
 func CreateConnection() {
 	DBStore.CreateConnection()
 
 }
+func RecoverFromPanic() {
+	if r := recover(); r != nil {
+		log.Println("Recovered in RecoverFromPanic:", r)
+	}
+}
+
+func PrintAllMembers() {
+	var memberRepo orminterfaces.MemberRepo = nil
+	memberInstance := DBStore.Member{}
+	memberRepo = &memberInstance
+	defer RecoverFromPanic()
+
+	// Fetch all members
+	members, err := memberRepo.GetAllMembers()
+	if err != nil {
+		panic(err)
+	}
+	for _, m := range members {
+		println("Member:", m.FirstName, m.LastName, m.Email)
+	}
+}
 func SaveMember() {
 
 	var memberRepo orminterfaces.MemberRepo = nil
 	memberInstance := DBStore.Member{
-		FirstName: "John",
-		LastName:  "Doe",
-		Email:     "john.doe@example.com",
+		FirstName: "Balasubramani",
+		LastName:  "Muthusamy",
+		Email:     "Balasubramani.Muthusamy@example.com",
 		Phone:     "123-456-7890",
 		Address:   "123 Main St, Anytown, USA",
 		StartDate: "2020-01-01",

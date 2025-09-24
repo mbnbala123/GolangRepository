@@ -26,3 +26,12 @@ func (m *Member) SaveMember() (bool, error) {
 	}
 	return true, nil
 }
+
+func (m *Member) GetAllMembers() ([]*Member, error) {
+	db := CreateConnection()
+	var members []*Member
+	if err := db.Find(&members).Error; err != nil {
+		return nil, err
+	}
+	return members, nil
+}
