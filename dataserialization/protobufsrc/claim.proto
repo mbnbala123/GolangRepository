@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package protobufsrc;
+option go_package = "policymanagement/dataserialization/protobufsrc/gen/demo/v1;v1";
+
+import "google/protobuf/timestamp.proto"; // for created_at
+
+message Claim {
+  int64 claim_id = 1;                        // field numbers are forever
+  string claim_type = 2;
+  int64 claim_amount = 3;                    // optional presence: see below
+  google.protobuf.Timestamp created_at = 4;
+  string status = 5;
+  string description = 6;
+}
